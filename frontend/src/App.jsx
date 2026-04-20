@@ -8,6 +8,7 @@ import AuthPage  from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import InvestPro from './pages/InvestPro';
 import Subscription from './pages/Subscription';
+import CardOffers from './pages/CardOffers';
 import Spinner   from './components/ui/Spinner';
 
 // CA Module Imports
@@ -56,7 +57,7 @@ function AppShell() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/finagent"  element={<ComingSoon name="FinAgent — AI Financial Assistant" />} />
           <Route path="/investpro" element={<InvestPro />} />
-          <Route path="/cards"     element={<ComingSoon name="Card Offers" />} />
+          <Route path="/cards"     element={<CardOffers />} />
           <Route path="/analyzer"  element={<ComingSoon name="Subscription Analyzer" />} />
           <Route path="/subscribe" element={<Subscription />} />
           <Route path="/ca"          element={<ProGuard><CADirectory /></ProGuard>} />

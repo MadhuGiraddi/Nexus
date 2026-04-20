@@ -87,7 +87,10 @@ export default function Dashboard() {
       }
     }, comp);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      ScrollTrigger.killAll();
+    };
   }, [banking.loading, market.loading]);
 
   useEffect(() => {

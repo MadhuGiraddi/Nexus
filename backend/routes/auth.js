@@ -31,6 +31,10 @@ router.post('/register', async (req, res) => {
       },
     });
   } catch (e) {
+    if (e.name === 'ValidationError') {
+      const msg = Object.values(e.errors).map(v => v.message).join(', ');
+      return res.status(400).json({ error: msg });
+    }
     console.error('[AUTH] Registration error:', e.message);
     res.status(500).json({ error: `Server error: ${e.message}` });
   }

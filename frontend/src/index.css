@@ -624,6 +624,141 @@ img { max-width: 100%; display: block; }
   .hero-amount { font-size: 32px; }
   .topbar { flex-direction: column; gap: 12px; align-items: flex-start; }
 }
+
+/* ── Card Offers Page ────────────────────────────────────────────────────── */
+.cc-3d-wrap {
+  perspective: 800px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.cc-3d-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.586;
+  border-radius: 14px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 2px solid transparent;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  transform-style: preserve-3d;
+}
+.cc-3d-card:hover {
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1) inset;
+}
+
+.cc-holo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,255,255,0.05) 45%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(255,255,255,0.05) 55%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.cc-3d-wrap:hover .cc-holo {
+  transform: translateX(100%);
+}
+
+.cc-chip-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cc-chip {
+  width: 38px;
+  height: 28px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #d4af37 0%, #c9a227 40%, #b8860b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.cc-chip-lines {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  width: 20px;
+  height: 14px;
+}
+.cc-chip-lines div {
+  border-radius: 1px;
+  background: rgba(0,0,0,0.15);
+}
+
+.cc-number {
+  display: flex;
+  gap: 14px;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.cc-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.cc-label {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 2px;
+}
+.cc-holder-name {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.8);
+}
+
+.cc-tier {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border: 1px solid;
+  color: rgba(255,255,255,0.7);
+}
+
+.cc-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.recommend-card {
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s;
+}
+.recommend-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+
 /* ── Elegant Landing Page ─────────────────────────────────────────────────── */
 .landing-root {
   height: 100vh;
