@@ -6,8 +6,9 @@ import Sidebar   from './components/layout/Sidebar';
 import LandingPage from './pages/LandingPage';
 import AuthPage  from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
-import InvestPro from './pages/InvestPro';
+import InvestPro    from './pages/InvestPro';
 import FinAgentPage from './pages/FinAgentPage';
+import LoansPage    from './pages/LoansPage';
 import Spinner   from './components/ui/Spinner';
 
 function ComingSoon({ name }) {
@@ -40,7 +41,7 @@ function AppShell() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/finagent"  element={<FinAgentPage />} />
           <Route path="/investpro" element={<InvestPro />} />
-          <Route path="/loans"     element={<ComingSoon name="Loans — EMI Calculator" />} />
+          <Route path="/loans"     element={<LoansPage />} />
           <Route path="/cards"     element={<ComingSoon name="Card Offers" />} />
           <Route path="/subscribe" element={<ComingSoon name="Sunscribe — Subscription Tracker" />} />
           <Route path="/ca"        element={<ComingSoon name="CA Contacts" />} />

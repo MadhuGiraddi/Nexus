@@ -34,6 +34,7 @@ app.use('/api/banking', require('./routes/banking'));
 app.use('/api/market',  require('./routes/market'));
 app.use('/api/invest',  require('./routes/invest'));
 app.use('/api/finagent', require('./routes/finagent'));
+app.use('/api/loans',    require('./routes/loans'));
 
 // ── Socket.io ─────────────────────────────────────────────────────────────────
 io.on('connection', (socket) => {
