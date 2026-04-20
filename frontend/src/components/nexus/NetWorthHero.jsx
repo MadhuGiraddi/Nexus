@@ -108,7 +108,7 @@ export default function NetWorthHero({ netWorth: plaidNetWorth, cashflow, loadin
       className="glass-card widget hero-widget"
       style={{ overflow: 'hidden' }}
     >
-      {/* VORTEX Scanning Effect */}
+      {/* Scanning Effect */}
       <div 
         style={{
           position: 'absolute',
@@ -117,11 +117,11 @@ export default function NetWorthHero({ netWorth: plaidNetWorth, cashflow, loadin
           opacity: 0.3,
           zIndex: 5,
           pointerEvents: 'none',
-          animation: 'vortex-scan 4s linear infinite'
+          animation: 'nexus-scan 4s linear infinite'
         }}
       />
       <style>{`
-        @keyframes vortex-scan {
+        @keyframes nexus-scan {
           0% { transform: translateY(-100px); opacity: 0; }
           10% { opacity: 0.5; }
           90% { opacity: 0.5; }

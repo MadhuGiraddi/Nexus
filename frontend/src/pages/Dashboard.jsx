@@ -41,7 +41,7 @@ export default function Dashboard() {
 
     let ctx = gsap.context(() => {
       
-      // 1. VORTEX-Style Massive Hero Reveal Sequence
+      // 1. Massive Hero Reveal Sequence
       const tl = gsap.timeline();
       tl.fromTo(".hero-amount", 
         { scale: 2.5, opacity: 0, y: 80, filter: "blur(15px)" },
@@ -58,7 +58,7 @@ export default function Dashboard() {
         "-=1.5"
       );
 
-      // 2. VORTEX-Style Physics Scrubbing (Cards fold into screen on scroll!)
+      // 2. Physics Scrubbing (Cards fold into screen on scroll!)
       try {
         const rows = gsap.utils.toArray(".dash-row");
         if (rows.length > 0) {
@@ -71,7 +71,7 @@ export default function Dashboard() {
                   scroller: document.querySelector(".app-main") ? ".app-main" : null,
                   start: "top 100%",  // Start animating as soon as it hits the bottom
                   end: "top 65%",     // Finish animating when it reaches 65% up the screen
-                  scrub: 1.5          // 1.5 seconds of lag for that buttery VORTEX physics feel
+                  scrub: 1.5          // 1.5 seconds of lag for that buttery physics feel
                 },
                 opacity: 1,
                 y: 0,
