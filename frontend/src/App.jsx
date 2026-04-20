@@ -7,6 +7,7 @@ import LandingPage from './pages/LandingPage';
 import AuthPage  from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import InvestPro from './pages/InvestPro';
+import FinAgentPage from './pages/FinAgentPage';
 import Spinner   from './components/ui/Spinner';
 
 function ComingSoon({ name }) {
@@ -37,7 +38,7 @@ function AppShell() {
         <Routes>
           <Route path="/"          element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/finagent"  element={<ComingSoon name="FinAgent — AI Financial Assistant" />} />
+          <Route path="/finagent"  element={<FinAgentPage />} />
           <Route path="/investpro" element={<InvestPro />} />
           <Route path="/loans"     element={<ComingSoon name="Loans — EMI Calculator" />} />
           <Route path="/cards"     element={<ComingSoon name="Card Offers" />} />

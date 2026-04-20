@@ -12,7 +12,7 @@ const MotionNavLink = motion(NavLink);
 const NAV = [
   { section: 'Core',           items: [{ to: '/', icon: LayoutDashboard, label: 'Nexus', badge: null }] },
   { section: 'Strong Modules', items: [
-      { to: '/finagent', icon: Bot, label: 'FinAgent', badge: 'Soon' }, 
+      { to: '/finagent', icon: Bot, label: 'FinAgent Cortex', badge: 'AI' }, 
       { to: '/investpro', icon: TrendingUp, label: 'InvestPro', badge: 'Soon' },
       { to: '/sip-guide', icon: BookOpen, label: 'SIP Guide', badge: 'New' }
   ] },

@@ -33,6 +33,7 @@ app.use('/api/auth',    require('./routes/auth'));
 app.use('/api/banking', require('./routes/banking'));
 app.use('/api/market',  require('./routes/market'));
 app.use('/api/invest',  require('./routes/invest'));
+app.use('/api/finagent', require('./routes/finagent'));
 
 // ── Socket.io ─────────────────────────────────────────────────────────────────
 io.on('connection', (socket) => {
