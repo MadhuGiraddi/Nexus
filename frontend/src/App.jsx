@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import InvestPro    from './pages/InvestPro';
 import FinAgentPage from './pages/FinAgentPage';
 import LoansPage    from './pages/LoansPage';
+import CAPage       from './pages/CAPage';
 import Spinner   from './components/ui/Spinner';
 
 function ComingSoon({ name }) {
@@ -44,7 +45,7 @@ function AppShell() {
           <Route path="/loans"     element={<LoansPage />} />
           <Route path="/cards"     element={<ComingSoon name="Card Offers" />} />
           <Route path="/subscribe" element={<ComingSoon name="Sunscribe — Subscription Tracker" />} />
-          <Route path="/ca"        element={<ComingSoon name="CA Contacts" />} />
+          <Route path="/ca"        element={<CAPage />} />
           <Route path="*"          element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </main>

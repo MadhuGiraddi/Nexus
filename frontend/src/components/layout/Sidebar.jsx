@@ -20,7 +20,7 @@ const NAV = [
       { to: '/loans',      icon: Percent,     label: 'Loans',       badge: 'Live' },
       { to: '/cards',      icon: CreditCard,  label: 'Card Offers', badge: 'Soon' },
       { to: '/subscribe',  icon: Calendar,    label: 'Sunscribe',   badge: 'Soon' },
-      { to: '/ca',         icon: Users,       label: 'CA Contacts', badge: 'Soon' },
+      { to: '/ca',         icon: Users,       label: 'CA Contacts', badge: 'Live' },
     ]
   },
 ];
