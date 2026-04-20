@@ -6,9 +6,16 @@ import Sidebar   from './components/layout/Sidebar';
 import LandingPage from './pages/LandingPage';
 import AuthPage  from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
+<<<<<<< HEAD
 import InvestPro from './pages/InvestPro';
 import Subscription from './pages/Subscription';
 import CardOffers from './pages/CardOffers';
+=======
+import InvestPro    from './pages/InvestPro';
+import FinAgentPage from './pages/FinAgentPage';
+import LoansPage    from './pages/LoansPage';
+import CAPage       from './pages/CAPage';
+>>>>>>> features
 import Spinner   from './components/ui/Spinner';
 
 // CA Module Imports
@@ -55,14 +62,21 @@ function AppShell() {
         <Routes>
           <Route path="/"          element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/finagent"  element={<ComingSoon name="FinAgent — AI Financial Assistant" />} />
+          <Route path="/finagent"  element={<FinAgentPage />} />
           <Route path="/investpro" element={<InvestPro />} />
+<<<<<<< HEAD
           <Route path="/cards"     element={<CardOffers />} />
           <Route path="/analyzer"  element={<ComingSoon name="Subscription Analyzer" />} />
           <Route path="/subscribe" element={<Subscription />} />
           <Route path="/ca"          element={<ProGuard><CADirectory /></ProGuard>} />
           <Route path="/ca/bookings" element={<ProGuard><CAMyBookings /></ProGuard>} />
           <Route path="/ca/:id"      element={<ProGuard><CAProfile /></ProGuard>} />
+=======
+          <Route path="/loans"     element={<LoansPage />} />
+          <Route path="/cards"     element={<ComingSoon name="Card Offers" />} />
+          <Route path="/subscribe" element={<ComingSoon name="Sunscribe — Subscription Tracker" />} />
+          <Route path="/ca"        element={<CAPage />} />
+>>>>>>> features
           <Route path="*"          element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </main>

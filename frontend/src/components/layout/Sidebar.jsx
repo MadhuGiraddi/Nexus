@@ -12,6 +12,7 @@ const MotionNavLink = motion(NavLink);
 const NAV = [
   { section: 'Core',           items: [{ to: '/', icon: LayoutDashboard, label: 'Nexus', badge: null }] },
   { section: 'Strong Modules', items: [
+<<<<<<< HEAD
       { to: '/finagent', icon: Bot, label: 'FinAgent', badge: null }, 
       { to: '/investpro', icon: TrendingUp, label: 'InvestPro', badge: null }
   ] },
@@ -21,6 +22,17 @@ const NAV = [
       { to: '/analyzer',   icon: Activity,    label: 'Sub Analyzer', badge: null },
       { to: '/subscribe',  icon: Calendar,    label: 'Subscriptions', badge: null },
       { to: '/ca',         icon: Users,       label: 'CA Contacts', badge: 'PRO', requiresPro: true },
+=======
+      { to: '/finagent', icon: Bot, label: 'FinAgent Cortex', badge: 'AI' }, 
+      { to: '/investpro', icon: TrendingUp, label: 'InvestPro', badge: 'Soon' },
+      { to: '/sip-guide', icon: BookOpen, label: 'SIP Guide', badge: 'New' }
+  ] },
+  { section: 'Simple Modules', items: [
+      { to: '/loans',      icon: Percent,     label: 'Loans',       badge: 'Live' },
+      { to: '/cards',      icon: CreditCard,  label: 'Card Offers', badge: 'Soon' },
+      { to: '/subscribe',  icon: Calendar,    label: 'Sunscribe',   badge: 'Soon' },
+      { to: '/ca',         icon: Users,       label: 'CA Contacts', badge: 'Live' },
+>>>>>>> features
     ]
   },
 ];

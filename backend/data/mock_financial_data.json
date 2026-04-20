@@ -1,0 +1,212 @@
+{
+  "bnplDebts": [
+    {
+      "id": "bnpl_1",
+      "provider": "Simpl",
+      "logo": "🛒",
+      "color": "#FF6B35",
+      "principal": 8500,
+      "outstanding": 6200,
+      "dueDate": "2026-05-05",
+      "implicitAnnualRate": 36,
+      "tenureMonths": 3,
+      "lateFeePerMonth": 450,
+      "category": "Shopping",
+      "lastTransaction": { "merchant": "Myntra", "amount": 3200, "date": "2026-04-01" }
+    },
+    {
+      "id": "bnpl_2",
+      "provider": "LazyPay",
+      "logo": "⚡",
+      "color": "#9B59B6",
+      "principal": 12000,
+      "outstanding": 9800,
+      "dueDate": "2026-05-12",
+      "implicitAnnualRate": 30,
+      "tenureMonths": 4,
+      "lateFeePerMonth": 600,
+      "category": "Food & Dining",
+      "lastTransaction": { "merchant": "Swiggy", "amount": 1400, "date": "2026-04-08" }
+    },
+    {
+      "id": "bnpl_3",
+      "provider": "Amazon Pay Later",
+      "logo": "📦",
+      "color": "#FF9900",
+      "principal": 22000,
+      "outstanding": 18500,
+      "dueDate": "2026-04-28",
+      "implicitAnnualRate": 28,
+      "tenureMonths": 6,
+      "lateFeePerMonth": 900,
+      "category": "E-Commerce",
+      "lastTransaction": { "merchant": "Amazon.in", "amount": 5800, "date": "2026-04-10" }
+    },
+    {
+      "id": "bnpl_4",
+      "provider": "HDFC FlexiPay",
+      "logo": "💳",
+      "color": "#004C97",
+      "principal": 15000,
+      "outstanding": 11000,
+      "dueDate": "2026-05-20",
+      "implicitAnnualRate": 24,
+      "tenureMonths": 5,
+      "lateFeePerMonth": 750,
+      "category": "Electronics",
+      "lastTransaction": { "merchant": "Croma", "amount": 7500, "date": "2026-03-28" }
+    },
+    {
+      "id": "bnpl_5",
+      "provider": "ZestMoney",
+      "logo": "🎯",
+      "color": "#1ABC9C",
+      "principal": 9500,
+      "outstanding": 7800,
+      "dueDate": "2026-05-08",
+      "implicitAnnualRate": 33,
+      "tenureMonths": 3,
+      "lateFeePerMonth": 520,
+      "category": "Travel",
+      "lastTransaction": { "merchant": "MakeMyTrip", "amount": 4200, "date": "2026-04-05" }
+    }
+  ],
+
+  "rescueLoanOffers": [
+    {
+      "id": "offer_1",
+      "bank": "SBI Digital Loan",
+      "logo": "🏛️",
+      "annualRate": 10.5,
+      "maxAmount": 200000,
+      "tenureMonths": 24,
+      "processingFee": 500,
+      "disbursalTime": "4 hours",
+      "highlighted": false
+    },
+    {
+      "id": "offer_2",
+      "bank": "HDFC Personal Loan",
+      "logo": "🏦",
+      "annualRate": 11.0,
+      "maxAmount": 500000,
+      "tenureMonths": 36,
+      "processingFee": 0,
+      "disbursalTime": "Instant",
+      "highlighted": true
+    },
+    {
+      "id": "offer_3",
+      "bank": "Bajaj Finserv",
+      "logo": "⚡",
+      "annualRate": 12.5,
+      "maxAmount": 300000,
+      "tenureMonths": 18,
+      "processingFee": 999,
+      "disbursalTime": "2 hours",
+      "highlighted": false
+    }
+  ],
+
+  "lifestyleBurnRate": {
+    "fixedOverheads": [
+      { "category": "Rent",        "icon": "🏠", "amount": 22000, "locked": true },
+      { "category": "Utilities",   "icon": "💡", "amount": 3500,  "locked": true },
+      { "category": "Groceries",   "icon": "🛒", "amount": 8000,  "locked": true },
+      { "category": "Insurance",   "icon": "🛡️", "amount": 4500,  "locked": true }
+    ],
+    "variableExpenses": [
+      { "category": "Dining Out",      "icon": "🍔", "amount": 6000,  "flexible": true },
+      { "category": "Entertainment",   "icon": "🎬", "amount": 3000,  "flexible": true },
+      { "category": "Travel",          "icon": "✈️", "amount": 5000,  "flexible": true },
+      { "category": "Shopping",        "icon": "👟", "amount": 7000,  "flexible": true },
+      { "category": "Subscriptions",   "icon": "📱", "amount": 1800,  "flexible": true },
+      { "category": "Fitness",         "icon": "🏋️", "amount": 2500,  "flexible": true }
+    ],
+    "monthlyIncome": 95000
+  },
+
+  "geoProperties": [
+    {
+      "id": "prop_1",
+      "location": "Whitefield, Bengaluru",
+      "type": "2BHK Apartment",
+      "price": 6500000,
+      "emoji": "🏙️",
+      "color": "#6C3BEE",
+      "amenities": ["Metro", "IT Hub", "Malls"],
+      "appreciationRate": 8.2,
+      "avgRent": 22000,
+      "tag": "Best Value"
+    },
+    {
+      "id": "prop_2",
+      "location": "Hinjewadi, Pune",
+      "type": "2BHK Apartment",
+      "price": 5800000,
+      "emoji": "🌇",
+      "color": "#3B82F6",
+      "amenities": ["IT Park", "Schools", "Hospitals"],
+      "appreciationRate": 9.1,
+      "avgRent": 18000,
+      "tag": "High Growth"
+    },
+    {
+      "id": "prop_3",
+      "location": "OMR, Chennai",
+      "type": "3BHK Villa",
+      "price": 8200000,
+      "emoji": "🏡",
+      "color": "#10B981",
+      "amenities": ["Sea View", "Gated", "Club House"],
+      "appreciationRate": 7.5,
+      "avgRent": 28000,
+      "tag": "Premium"
+    },
+    {
+      "id": "prop_4",
+      "location": "Gachibowli, Hyderabad",
+      "type": "2BHK Apartment",
+      "price": 7100000,
+      "emoji": "🏢",
+      "color": "#F59E0B",
+      "amenities": ["Tech Corridor", "Metro soon", "Parks"],
+      "appreciationRate": 10.3,
+      "avgRent": 24000,
+      "tag": "Top Appreciation"
+    },
+    {
+      "id": "prop_5",
+      "location": "Salt Lake, Kolkata",
+      "type": "3BHK Flat",
+      "price": 4500000,
+      "emoji": "🌆",
+      "color": "#EC4899",
+      "amenities": ["IT Sector", "Metro", "Lakes"],
+      "appreciationRate": 6.8,
+      "avgRent": 15000,
+      "tag": "Most Affordable"
+    },
+    {
+      "id": "prop_6",
+      "location": "Andheri West, Mumbai",
+      "type": "1BHK Studio",
+      "price": 9500000,
+      "emoji": "🌃",
+      "color": "#EF4444",
+      "amenities": ["Metro", "Airport", "Lifestyle"],
+      "appreciationRate": 7.2,
+      "avgRent": 38000,
+      "tag": "Prime Location"
+    }
+  ],
+
+  "rentInflationHistory": [
+    { "year": "2020", "rentMultiplier": 1.0,  "propertyMultiplier": 1.0 },
+    { "year": "2021", "rentMultiplier": 1.04, "propertyMultiplier": 1.06 },
+    { "year": "2022", "rentMultiplier": 1.10, "propertyMultiplier": 1.14 },
+    { "year": "2023", "rentMultiplier": 1.17, "propertyMultiplier": 1.25 },
+    { "year": "2024", "rentMultiplier": 1.26, "propertyMultiplier": 1.38 },
+    { "year": "2025", "rentMultiplier": 1.35, "propertyMultiplier": 1.52 }
+  ]
+}
