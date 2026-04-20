@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCw, Bell, Wifi, WifiOff } from 'lucide-react';
+import { RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 
@@ -89,18 +89,7 @@ export default function TopBar({ onSync, syncing }) {
           <RefreshCw size={16} className={syncing ? 'spin' : ''} />
         </motion.button>
 
-        <motion.button 
-          className="btn-icon" 
-          title="Notifications"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.7 }}
-          whileHover={{ scale: 1.1, backgroundColor: "var(--glass-hover)" }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <Bell size={16} />
-          <span className="notif-dot" />
-        </motion.button>
+
 
         <motion.div 
           className="topbar-avatar"

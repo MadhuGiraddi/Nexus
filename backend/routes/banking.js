@@ -5,6 +5,7 @@ const User        = require('../models/User');
 const Transaction = require('../models/Transaction');
 const InvestSip   = require('../models/InvestSip');
 const InvestTrigger = require('../models/InvestTrigger');
+const Loan        = require('../models/Loan');
 const auth        = require('../middleware/auth');
 
 // ── Plaid Client ──────────────────────────────────────────────────────────────
@@ -221,6 +222,27 @@ router.get('/accounts', auth, async (req, res) => {
         institutionName: 'InvestPro AI',
         institutionLogo: null,
         itemId: 'investpro'
+      });
+    }
+
+    // ── Nexus Loans Integration (Shows up as Liability in Core Module) ──
+    const activeLoans = await Loan.find({ userId: req.userId, status: { $in: ['approved', 'active', 'funded'] } });
+    for (const loan of activeLoans) {
+      all.push({
+        account_id: `nexus_loan_${loan._id}`,
+        name: `${loan.purpose || 'Nexus'} Loan`,
+        official_name: 'Nexus Internal Financing',
+        type: 'loan',
+        subtype: 'personal',
+        balances: {
+          current: loan.principalAmount / 83.5, // Convert INR back to USD for core module display
+          available: null,
+          limit: loan.principalAmount / 83.5,
+          iso_currency_code: 'USD'
+        },
+        institutionName: 'Nexus Finance',
+        institutionLogo: null, 
+        itemId: 'nexus_core'
       });
     }
 

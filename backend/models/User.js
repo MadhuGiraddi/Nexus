@@ -15,7 +15,8 @@ const UserSchema = new mongoose.Schema({
   email:      { type: String, required: true, unique: true, lowercase: true, trim: true },
   password:   { type: String, required: true, minlength: 6 },
   plaidItems: [PlaidItemSchema],
-  walletBalance: { type: Number, default: 50000.00 },
+  walletBalance: { type: Number, default: 1000.00 },
+  isSubscribed: { type: Boolean, default: false },
   createdAt:  { type: Date, default: Date.now },
 });
 

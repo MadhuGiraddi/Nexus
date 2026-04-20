@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useAuth } from '../context/AuthContext';
-import nexusBg from '../assets/nexus_bg.png';
+const nexusBg = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -85,7 +85,7 @@ export default function LandingPage() {
 
       <div className="content-center">
         <div className="branding-wrap">
-          <span className="brand-tag">NEXUS OPERATING SYSTEM</span>
+          <span className="brand-tag">NEXT-GEN FINANCIAL ECOSYSTEM</span>
           <h1 className="nexus-hero-text" ref={textRef}>
             NEXUS
           </h1>
@@ -97,7 +97,7 @@ export default function LandingPage() {
             onClick={() => navigate('/auth')}
           >
             <span className="btn-glow" />
-            <span className="btn-text">ACCESS TERMINAL</span>
+            <span className="btn-text">ENTER</span>
             <span className="btn-shimmer" />
           </button>
         </div>

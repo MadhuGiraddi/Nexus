@@ -7,7 +7,24 @@ import LandingPage from './pages/LandingPage';
 import AuthPage  from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import InvestPro from './pages/InvestPro';
+import Subscription from './pages/Subscription';
 import Spinner   from './components/ui/Spinner';
+
+// CA Module Imports
+import CADirectory from './pages/ca/CADirectory';
+import CAProfile from './pages/ca/CAProfile';
+import CAMyBookings from './pages/ca/MyBookings';
+import ProGuard from './pages/ca/components/ProGuard';
+
+// Loan Module Imports
+import LoanLayout from './pages/loans/LoanLayout';
+import LoanHome from './pages/loans/screens/Home';
+import LoanApplication from './pages/loans/screens/Application';
+import LoanAdvisor from './pages/loans/screens/AiAdvisor';
+import LoanCalc from './pages/loans/screens/EmiCalculator';
+import LoanTracker from './pages/loans/screens/Tracker';
+import LoanScore from './pages/loans/screens/CreditScore';
+import LoanRepayment from './pages/loans/screens/Repayment';
 
 function ComingSoon({ name }) {
   return (
@@ -39,10 +56,12 @@ function AppShell() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/finagent"  element={<ComingSoon name="FinAgent — AI Financial Assistant" />} />
           <Route path="/investpro" element={<InvestPro />} />
-          <Route path="/loans"     element={<ComingSoon name="Loans — EMI Calculator" />} />
           <Route path="/cards"     element={<ComingSoon name="Card Offers" />} />
-          <Route path="/subscribe" element={<ComingSoon name="Sunscribe — Subscription Tracker" />} />
-          <Route path="/ca"        element={<ComingSoon name="CA Contacts" />} />
+          <Route path="/analyzer"  element={<ComingSoon name="Subscription Analyzer" />} />
+          <Route path="/subscribe" element={<Subscription />} />
+          <Route path="/ca"          element={<ProGuard><CADirectory /></ProGuard>} />
+          <Route path="/ca/bookings" element={<ProGuard><CAMyBookings /></ProGuard>} />
+          <Route path="/ca/:id"      element={<ProGuard><CAProfile /></ProGuard>} />
           <Route path="*"          element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </main>
@@ -65,6 +84,16 @@ export default function App() {
           <Routes>
             <Route path="/"     element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/loans" element={<Protected><LoanLayout /></Protected>}>
+              <Route index element={<LoanHome />} />
+              <Route path="apply" element={<LoanApplication />} />
+              <Route path="advisor" element={<LoanAdvisor />} />
+              <Route path="calc" element={<LoanCalc />} />
+              <Route path="tracker"   element={<LoanTracker />} />
+              <Route path="score"     element={<LoanScore />} />
+              <Route path="repayment" element={<LoanRepayment />} />
+              <Route path="*"         element={<Navigate to="/loans" replace />} />
+            </Route>
             <Route path="/*" element={
               <Protected>
                 <AppShell />

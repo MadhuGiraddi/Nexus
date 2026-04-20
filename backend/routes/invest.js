@@ -106,7 +106,7 @@ router.get('/analytics', auth, async (req, res) => {
 
     for (const tx of txns) {
       const name = tx.name.toLowerCase();
-      const amount = tx.amount;
+      const amount = tx.amount * 83.5;
 
       // --> Round Up Logic
       if (triggerConfigs.round_up) {
@@ -188,7 +188,7 @@ router.get('/analytics', auth, async (req, res) => {
         }
         
         if (isCashback) {
-          const val = Math.abs(tx.amount);
+          const val = Math.abs(tx.amount) * 83.5;
           analytics.cashback.totalSaved += val;
           if (analytics.cashback.items.length < 5) {
             analytics.cashback.items.push({ name: tx.name, saved: val.toFixed(0), date: tx.date });

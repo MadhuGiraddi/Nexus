@@ -20,9 +20,10 @@ http.interceptors.response.use(
 );
 
 export const authAPI = {
-  register: (d) => http.post('/auth/register', d),
-  login:    (d) => http.post('/auth/login', d),
-  me:       ()  => http.get('/auth/me'),
+  register:  (d) => http.post('/auth/register', d),
+  login:     (d) => http.post('/auth/login', d),
+  me:        ()  => http.get('/auth/me'),
+  subscribe: ()  => http.post('/auth/subscribe')
 };
 
 export const bankingAPI = {
@@ -59,6 +60,25 @@ export const investAPI = {
   buy:          (d) => http.post('/invest/buy', d),
   sell:         (d) => http.post('/invest/sell', d),
   refill:       () => http.post('/invest/refill'),
+};
+
+export const loansAPI = {
+  eligibility:  ()      => http.get('/loans/eligibility'),
+  advisor:      ()      => http.get('/loans/advisor'),
+  apply:        (d)     => http.post('/loans/apply', d),
+  getAll:       ()      => http.get('/loans'),
+  getOne:       (id)    => http.get(`/loans/${id}`),
+  repay:        (id, d) => http.post(`/loans/${id}/repay`, d),
+  upload:       (formData) => http.post('/loans/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+};
+
+export const caAPI = {
+  getAll:       (params) => http.get('/ca', { params }),
+  getOne:       (id)     => http.get(`/ca/${id}`),
+  getMyBookings:()       => http.get('/ca/bookings/my'),
+  bookSlot:     (d)      => http.post('/ca/bookings', d),
+  cancelBooking:(id)     => http.patch(`/ca/bookings/${id}/cancel`),
+  submitReview: (d)      => http.post('/ca/reviews', d)
 };
 
 export default http;

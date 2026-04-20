@@ -13,14 +13,15 @@ const axios       = require('axios');
 const app    = express();
 const server = http.createServer(app);
 const io     = new Server(server, {
-  cors: { origin: process.env.CLIENT_URL || 'http://localhost:5173', methods: ['GET','POST'] },
+  cors: { origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5174'], methods: ['GET','POST'] },
 });
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5174'], credentials: true }));
 app.use(express.json());
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 300, standardHeaders: true }));
 
 // ── MongoDB ───────────────────────────────────────────────────────────────────
@@ -33,6 +34,8 @@ app.use('/api/auth',    require('./routes/auth'));
 app.use('/api/banking', require('./routes/banking'));
 app.use('/api/market',  require('./routes/market'));
 app.use('/api/invest',  require('./routes/invest'));
+app.use('/api/loans',   require('./routes/loans'));
+app.use('/api/ca',      require('./routes/ca'));
 
 // ── Socket.io ─────────────────────────────────────────────────────────────────
 io.on('connection', (socket) => {
