@@ -1,6 +1,6 @@
 # Nexus Open Banking Control Center
 
-Nexus is a state-of-the-art fintech application designed to deliver an "Operating System" like experience for managing personal finances. It features a sophisticated, highly-animated user interface inspired by premium, Awwwards-tier web design, offering fluid interactions, physics-based animations, and real-time data connectivity.
+Nexus is a state-of-the-art fintech responsive web application designed to deliver a seamless experience for managing personal finances. It features a sophisticated, highly-animated user interface inspired by premium, Awwwards-tier web design, offering fluid interactions, physics-based animations, and real-time data connectivity.
 
 ## Overview
 
@@ -9,7 +9,7 @@ The application is split into two main components:
 - **Backend:** A robust Node.js/Express server that interfaces with MongoDB, handles secure user authentication, and integrates with the Plaid API for real-time banking data.
 
 ## Features
-- **Premium User Interface:** Uses advanced CSS techniques, framer-motion, and GSAP for staggered entrances, 3D tilt micro-interactions, and visual textures to create a high-tech operating system aesthetic.
+- **Premium User Interface:** Uses advanced CSS techniques, framer-motion, and GSAP for staggered entrances, 3D tilt micro-interactions, and visual textures to create a high-tech, responsive web aesthetic.
 - **Real-Time Data:** Integrates with Socket.io for live updates.
 - **Financial Integrations:** Connects directly to bank accounts via the Plaid API (`react-plaid-link`).
 - **Data Visualization:** Employs Recharts to display interactive, beautiful financial charts.
