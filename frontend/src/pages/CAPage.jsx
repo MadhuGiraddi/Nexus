@@ -10,7 +10,11 @@ import {
   Brain, RefreshCw, ArrowRight, Trash2, Eye, Copy,
   FileText, TrendingUp, Plus, X, Calendar, BadgeCheck,
   Building2, Phone, MessageSquare, Sparkles, Target,
-  FlaskConical, Vault, ExternalLink
+  FlaskConical, Vault, ExternalLink, Video, Mic, MicOff,
+  VideoOff, Send, Paperclip, Image as ImageIcon, Crown,
+  Bell, BellOff, RotateCcw, XCircle, ChevronRight,
+  Headphones, PhoneCall, PhoneOff, Volume2, VolumeX,
+  Download, FileImage, Film, Music, Key, ShieldCheck
 } from 'lucide-react';
 import { motion as m } from 'framer-motion';
 
@@ -867,6 +871,720 @@ function EphemeralVault({ preSelectedCA }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// FEATURE 4 — MY SESSIONS (Booking Panel)
+// ═══════════════════════════════════════════════════════════════════════════════
+const MOCK_SESSIONS = [
+  {
+    id: 'ses_001', caId: 'ca_003', caName: 'Kavya Nair', caAvatar: 'KN', caColor: '#10B981',
+    caFirm: 'Nair Financial Advisory', caSpec: 'Crypto & Web3 Tax',
+    type: 'full', slot: '4:00 PM', date: new Date(Date.now() + 2 * 3600000).toISOString(),
+    fee: 3000, status: 'upcoming', dossierAttached: true, bookingId: 'BK1745161822001',
+    notes: 'Discuss USDT to INR conversion tax implications for FY 2025-26.',
+    reminder: true, zoomLink: 'https://meet.nexus.ai/room/ses_001',
+  },
+  {
+    id: 'ses_002', caId: 'ca_001', caName: 'Priya Sharma', caAvatar: 'PS', caColor: '#6C3BEE',
+    caFirm: 'Sharma & Associates', caSpec: 'Startup Taxation',
+    type: 'quick', slot: '10:00 AM', date: new Date(Date.now() + 26 * 3600000).toISOString(),
+    fee: 800, status: 'upcoming', dossierAttached: true, bookingId: 'BK1745161822002',
+    notes: '',reminder: false, zoomLink: 'https://meet.nexus.ai/room/ses_002',
+  },
+  {
+    id: 'ses_003', caId: 'ca_005', caName: 'Sneha Patil', caAvatar: 'SP', caColor: '#EC4899',
+    caFirm: 'TaxNinja Advisory', caSpec: 'Freelancer Tax',
+    type: 'full', slot: '1:00 PM', date: new Date(Date.now() - 3 * 86400000).toISOString(),
+    fee: 1500, status: 'completed', dossierAttached: true, bookingId: 'BK1745161822003',
+    notes: 'ITR-4 with 44ADA filed. Advance tax schedule confirmed.',
+    reminder: false, zoomLink: null, rating: 5,
+  },
+];
+
+function CountdownTimer({ targetDate }) {
+  const [timeLeft, setTimeLeft] = useState({});
+  const [isLive, setIsLive]     = useState(false);
+
+  useEffect(() => {
+    const calc = () => {
+      const diff = new Date(targetDate) - Date.now();
+      if (diff <= 0) { setIsLive(true); return; }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setTimeLeft({ h, m, s });
+    };
+    calc();
+    const t = setInterval(calc, 1000);
+    return () => clearInterval(t);
+  }, [targetDate]);
+
+  if (isLive) return (
+    <motion.div className="timer-live" animate={{ scale: [1, 1.04, 1] }} transition={{ repeat: Infinity, duration: 1.2 }}>
+      <span className="live-dot" />
+      LIVE — Your CA is waiting!
+    </motion.div>
+  );
+
+  if (!timeLeft.h && !timeLeft.m && !timeLeft.s) return null;
+  const soon = timeLeft.h === 0 && timeLeft.m < 30;
+
+  return (
+    <div className={`ses-timer ${soon ? 'soon' : ''}`}>
+      <Clock size={12} />
+      {timeLeft.h > 0 && <><span className="timer-seg">{String(timeLeft.h).padStart(2,'0')}</span><span className="timer-sep">h</span></>}
+      <span className="timer-seg">{String(timeLeft.m).padStart(2,'0')}</span><span className="timer-sep">m</span>
+      <span className="timer-seg">{String(timeLeft.s).padStart(2,'0')}</span><span className="timer-sep">s</span>
+    </div>
+  );
+}
+
+function MySessionsPanel({ sessions, setSessions, onOpenChat, onSubscribeModal }) {
+  const [activeSession,  setActiveSession]  = useState(null);
+  const [showReschedule, setShowReschedule] = useState(null);
+  const [showCancel,     setShowCancel]     = useState(null);
+  const [editNotes,      setEditNotes]      = useState({});
+  const [noteInput,      setNoteInput]      = useState('');
+  const [showJoinReady,  setShowJoinReady]  = useState(null);
+  const [ratingSession,  setRatingSession]  = useState(null);
+  const [starHover,      setStarHover]      = useState(0);
+
+  const upcoming  = sessions.filter(s => s.status === 'upcoming');
+  const completed = sessions.filter(s => s.status === 'completed');
+
+  const cancelSession = (id) => {
+    setSessions(prev => prev.filter(s => s.id !== id));
+    setShowCancel(null);
+  };
+
+  const rescheduleSession = (id, newSlot) => {
+    setSessions(prev => prev.map(s => s.id === id ? { ...s, slot: newSlot } : s));
+    setShowReschedule(null);
+  };
+
+  const saveNote = (id) => {
+    setSessions(prev => prev.map(s => s.id === id ? { ...s, notes: noteInput } : s));
+    setEditNotes(prev => ({ ...prev, [id]: false }));
+  };
+
+  const toggleReminder = (id) => {
+    setSessions(prev => prev.map(s => s.id === id ? { ...s, reminder: !s.reminder } : s));
+  };
+
+  const rateSession = (id, rating) => {
+    setSessions(prev => prev.map(s => s.id === id ? { ...s, rating } : s));
+    setRatingSession(null);
+  };
+
+  return (
+    <div className="ses-root">
+      <div className="ses-header-strip">
+        <Calendar size={18} className="text-accent" />
+        <div>
+          <h3 className="ses-title">My Sessions</h3>
+          <p className="ses-sub">Manage your booked consultations · Join live calls · Set reminders · Leave reviews</p>
+        </div>
+        <div className="ses-kpi-row">
+          <div className="ses-kpi"><span>{upcoming.length}</span><p>Upcoming</p></div>
+          <div className="ses-kpi"><span>{completed.length}</span><p>Completed</p></div>
+        </div>
+      </div>
+
+      {/* Upcoming sessions */}
+      {upcoming.length === 0 && completed.length === 0 ? (
+        <div className="ses-empty">
+          <Calendar size={40} />
+          <p>No sessions yet. Book a CA from the Directory tab!</p>
+        </div>
+      ) : (
+        <div className="ses-layout">
+          <div className="ses-list">
+            {upcoming.length > 0 && (
+              <>
+                <p className="ses-section-label">🟢 Upcoming</p>
+                {upcoming.map(ses => {
+                  const sessionDate = new Date(ses.date);
+                  const diffMs = sessionDate - Date.now();
+                  const isToday = diffMs > 0 && diffMs < 86400000;
+                  const canJoin = diffMs < 10 * 60000; // within 10 min
+
+                  return (
+                    <motion.div
+                      key={ses.id}
+                      className={`ses-card glass-card ${activeSession === ses.id ? 'ses-active' : ''} ${isToday ? 'ses-today' : ''}`}
+                      layout
+                      onClick={() => setActiveSession(ses.id === activeSession ? null : ses.id)}
+                      whileHover={{ y: -2 }}
+                    >
+                      {isToday && <div className="ses-today-strip">📅 Today</div>}
+
+                      <div className="ses-card-top">
+                        <div className="ses-avatar" style={{ background: ses.caColor + '22', color: ses.caColor }}>{ses.caAvatar}</div>
+                        <div className="ses-meta">
+                          <p className="ses-ca-name">{ses.caName}</p>
+                          <p className="ses-ca-firm">{ses.caFirm}</p>
+                          <p className="ses-ca-spec">{ses.caSpec}</p>
+                        </div>
+                        <div className="ses-right">
+                          <p className="ses-slot">{sessionDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} · {ses.slot}</p>
+                          <span className={`ses-type-badge ${ses.type}`}>{ses.type === 'quick' ? '⚡ Quick Chat' : '🗂 Full Consult'}</span>
+                          <p className="ses-fee">{fmt(ses.fee)}</p>
+                        </div>
+                      </div>
+
+                      {/* Countdown */}
+                      <div className="ses-timer-row">
+                        <CountdownTimer targetDate={ses.date} />
+                        {ses.dossierAttached && <span className="ses-dossier-badge"><FileText size={10} /> Dossier sent</span>}
+                      </div>
+
+                      {/* Actions row */}
+                      <div className="ses-actions">
+                        {canJoin ? (
+                          <motion.button
+                            className="ses-join-btn"
+                            whileHover={{ scale: 1.04 }}
+                            onClick={e => { e.stopPropagation(); onSubscribeModal('video'); }}
+                          >
+                            <Video size={14} /> Join Video Call
+                          </motion.button>
+                        ) : (
+                          <button className="ses-join-preview-btn" onClick={e => { e.stopPropagation(); setShowJoinReady(ses.id); }}>
+                            <Video size={13} /> Call Room
+                          </button>
+                        )}
+                        <button className="ses-action-btn" onClick={e => { e.stopPropagation(); onOpenChat(ses); }}>
+                          <MessageSquare size={13} /> Chat
+                        </button>
+                        <button
+                          className={`ses-action-btn ${ses.reminder ? 'active-rem' : ''}`}
+                          onClick={e => { e.stopPropagation(); toggleReminder(ses.id); }}
+                          title={ses.reminder ? 'Reminder ON' : 'Set Reminder'}
+                        >
+                          {ses.reminder ? <Bell size={13} /> : <BellOff size={13} />}
+                        </button>
+                        <button className="ses-action-btn" onClick={e => { e.stopPropagation(); setShowReschedule(ses.id); }}>
+                          <RotateCcw size={13} /> Reschedule
+                        </button>
+                        <button className="ses-action-btn danger" onClick={e => { e.stopPropagation(); setShowCancel(ses.id); }}>
+                          <XCircle size={13} /> Cancel
+                        </button>
+                      </div>
+
+                      {/* Expandable notes */}
+                      <AnimatePresence>
+                        {activeSession === ses.id && (
+                          <motion.div
+                            className="ses-detail"
+                            initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                            style={{ overflow: 'hidden' }}
+                          >
+                            <p className="ses-notes-label">📝 Session Notes</p>
+                            {editNotes[ses.id] ? (
+                              <div className="ses-notes-edit">
+                                <textarea
+                                  className="ses-notes-input"
+                                  value={noteInput}
+                                  onChange={e => setNoteInput(e.target.value)}
+                                  placeholder="Add agenda, questions for the CA..."
+                                  rows={3}
+                                />
+                                <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                                  <button className="ses-save-btn" onClick={() => saveNote(ses.id)}><Check size={12} /> Save</button>
+                                  <button className="ses-cancel-note-btn" onClick={() => setEditNotes(p => ({...p, [ses.id]: false}))}>Cancel</button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="ses-notes-view" onClick={() => { setNoteInput(ses.notes || ''); setEditNotes(p => ({...p, [ses.id]: true})); }}>
+                                {ses.notes ? ses.notes : <span className="ses-notes-placeholder">Click to add agenda / questions...</span>}
+                              </div>
+                            )}
+
+                            <div className="ses-detail-grid">
+                              <div><span className="ses-detail-label">Booking ID</span><span className="ses-detail-val mono">{ses.bookingId}</span></div>
+                              <div><span className="ses-detail-label">Session Type</span><span className="ses-detail-val">{ses.type === 'quick' ? 'Quick Chat (30 min)' : 'Full Consultation (60 min)'}</span></div>
+                              <div><span className="ses-detail-label">Payment</span><span className="ses-detail-val green">Confirmed — {fmt(ses.fee)}</span></div>
+                              <div><span className="ses-detail-label">Tax Dossier</span><span className="ses-detail-val">{ses.dossierAttached ? '✅ Sent to CA' : 'Not attached'}</span></div>
+                            </div>
+
+                            {ses.zoomLink && (
+                              <div className="ses-join-info">
+                                <ShieldCheck size={13} />
+                                <p>Secure meeting room ready. Video & audio calls require <button className="sub-link" onClick={() => onSubscribeModal('video')}>Nexus Pro</button>.</p>
+                              </div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  );
+                })}
+              </>
+            )}
+
+            {completed.length > 0 && (
+              <>
+                <p className="ses-section-label" style={{ marginTop: 20 }}>✅ Completed</p>
+                {completed.map(ses => (
+                  <motion.div key={ses.id} className="ses-card glass-card ses-completed" layout initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div className="ses-card-top">
+                      <div className="ses-avatar" style={{ background: ses.caColor + '22', color: ses.caColor }}>{ses.caAvatar}</div>
+                      <div className="ses-meta">
+                        <p className="ses-ca-name">{ses.caName}</p>
+                        <p className="ses-ca-firm">{ses.caFirm}</p>
+                      </div>
+                      <div className="ses-right">
+                        <p className="ses-slot">{new Date(ses.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                        <p className="ses-fee">{fmt(ses.fee)}</p>
+                      </div>
+                    </div>
+                    <div className="ses-completed-strip">
+                      {ses.rating ? (
+                        <div className="ses-rating-display">
+                          {[1,2,3,4,5].map(s => <Star key={s} size={14} fill={s <= ses.rating ? '#F59E0B' : 'transparent'} color={s <= ses.rating ? '#F59E0B' : 'var(--border-2)'} />)}
+                          <span style={{ fontSize: 11, color: 'var(--text-3)', marginLeft: 4 }}>Your review</span>
+                        </div>
+                      ) : (
+                        <button className="ses-rate-btn" onClick={() => setRatingSession(ses.id)}>
+                          <Star size={13} /> Rate this session
+                        </button>
+                      )}
+                      <button className="ses-action-btn" style={{ opacity: 0.7 }} onClick={() => onOpenChat(ses)}>
+                        <MessageSquare size={12} /> View Chat
+                      </button>
+                      <button className="ses-action-btn" onClick={() => {}}>
+                        <Download size={12} /> Receipt
+                      </button>
+                    </div>
+                    {ses.notes && <p className="ses-completed-notes">"{ses.notes}"</p>}
+                  </motion.div>
+                ))}
+              </>
+            )}
+          </div>
+
+          {/* Right: guidance panel */}
+          <div className="ses-guide-panel">
+            <div className="glass-card ses-guide-card">
+              <h4 className="ses-guide-title"><Shield size={14} /> Session Checklist</h4>
+              <div className="ses-checklist">
+                {[
+                  { done: true,  text: 'Account verified' },
+                  { done: true,  text: 'Tax Dossier generated' },
+                  { done: true,  text: 'Payment confirmed' },
+                  { done: false, text: 'Add session agenda notes' },
+                  { done: false, text: 'Set 30-min reminder' },
+                  { done: false, text: 'Test your mic & camera' },
+                ].map((item, i) => (
+                  <div key={i} className={`ses-check-item ${item.done ? 'done' : ''}`}>
+                    {item.done ? <Check size={13} /> : <div className="ses-check-circle" />}
+                    <span>{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="glass-card ses-guide-card">
+              <h4 className="ses-guide-title"><Crown size={14} style={{ color: '#F59E0B' }} /> Communication Options</h4>
+              {[
+                { icon: <MessageSquare size={15} />, label: 'Secure Chat', desc: 'E2E encrypted messaging with file share', free: true },
+                { icon: <PhoneCall size={15} />,     label: 'Voice Call',  desc: 'Crystal-clear HD audio', free: false },
+                { icon: <Video size={15} />,          label: 'Video Call',  desc: '1080p encrypted video consult', free: false },
+              ].map(opt => (
+                <div key={opt.label} className="ses-comm-opt">
+                  <div className="ses-comm-icon" style={{ color: opt.free ? 'var(--green)' : '#F59E0B' }}>{opt.icon}</div>
+                  <div className="ses-comm-meta">
+                    <p className="ses-comm-label">{opt.label}</p>
+                    <p className="ses-comm-desc">{opt.desc}</p>
+                  </div>
+                  {opt.free
+                    ? <span className="ses-free-badge">Free</span>
+                    : <button className="ses-pro-btn" onClick={() => onSubscribeModal('call')}>Pro</button>
+                  }
+                </div>
+              ))}
+            </div>
+
+            <div className="glass-card ses-guide-card">
+              <h4 className="ses-guide-title">📋 Session Etiquette</h4>
+              <ul className="ses-etiquette">
+                <li>Join 2 minutes early to test your connection</li>
+                <li>Keep your PAN card & Form 16 handy</li>
+                <li>All conversations are recorded for your protection</li>
+                <li>Sessions can be extended at ₹500/15 min</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reschedule Modal */}
+      <AnimatePresence>
+        {showReschedule && (
+          <motion.div className="ai-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="ai-modal glass-card" style={{ maxWidth: 400 }} initial={{ scale: 0.92 }} animate={{ scale: 1 }} exit={{ scale: 0.92 }}>
+              <div className="ai-modal-header"><span>Reschedule Session</span><button className="ai-modal-close" onClick={() => setShowReschedule(null)}>×</button></div>
+              <div style={{ padding: '20px 24px' }}>
+                <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 16 }}>Select a new time slot:</p>
+                <div className="ses-reschd-slots">
+                  {['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '4:30 PM', '6:00 PM'].map(slot => (
+                    <button key={slot} className="ca-slot-btn" onClick={() => rescheduleSession(showReschedule, slot)}>
+                      <Calendar size={11} /> {slot}
+                    </button>
+                  ))}
+                </div>
+                <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 12 }}>Rescheduling is free up to 24 hours before the session.</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Cancel Modal */}
+      <AnimatePresence>
+        {showCancel && (
+          <motion.div className="ai-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="ai-modal glass-card" style={{ maxWidth: 380 }} initial={{ scale: 0.92 }} animate={{ scale: 1 }} exit={{ scale: 0.92 }}>
+              <div className="ai-modal-header"><span>Cancel Booking</span><button className="ai-modal-close" onClick={() => setShowCancel(null)}>×</button></div>
+              <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-2)' }}>Are you sure? Cancellations within 24 hours of the session are non-refundable.</p>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button className="rescue-cancel-btn" onClick={() => setShowCancel(null)}>Keep Booking</button>
+                  <button className="rescue-execute-btn" style={{ background: 'var(--red)' }} onClick={() => cancelSession(showCancel)}>
+                    <X size={13} /> Cancel Session
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Star Rating Modal */}
+      <AnimatePresence>
+        {ratingSession && (
+          <motion.div className="ai-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="ai-modal glass-card" style={{ maxWidth: 340 }} initial={{ scale: 0.92 }} animate={{ scale: 1 }} exit={{ scale: 0.92 }}>
+              <div className="ai-modal-header"><span>Rate Your Session</span><button className="ai-modal-close" onClick={() => setRatingSession(null)}>×</button></div>
+              <div style={{ padding: '24px', textAlign: 'center' }}>
+                <p style={{ fontSize: 13, color: 'var(--text-2)', marginBottom: 16 }}>How was your consultation?</p>
+                <div className="ses-star-row">
+                  {[1,2,3,4,5].map(s => (
+                    <button key={s} onMouseEnter={() => setStarHover(s)} onMouseLeave={() => setStarHover(0)} onClick={() => rateSession(ratingSession, s)}>
+                      <Star size={28} fill={s <= starHover ? '#F59E0B' : 'transparent'} color={s <= starHover ? '#F59E0B' : 'var(--border-2)'} style={{ transition: 'all 0.15s' }} />
+                    </button>
+                  ))}
+                </div>
+                <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 8 }}>
+                  {starHover === 5 ? '🌟 Excellent!' : starHover >= 4 ? '😊 Great!' : starHover >= 3 ? '👍 Good' : starHover >= 1 ? '🤔 Could be better' : 'Tap a star to rate'}
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FEATURE 5 — CA SECURE CHAT (E2E Encrypted)
+// ═══════════════════════════════════════════════════════════════════════════════
+const MOCK_CHAT_HISTORY = {
+  ses_001: [
+    { id: 1, from: 'ca', text: 'Hello! I have reviewed your Tax Dossier. The USDT-to-INR conversions will attract a flat **30% VDA tax** — let me explain how to minimize by choosing the right financial year exit.', ts: Date.now() - 7200000, type: 'text' },
+    { id: 2, from: 'user', text: 'Thanks Kavya! What about if I hold for more than 3 years?', ts: Date.now() - 7100000, type: 'text' },
+    { id: 3, from: 'ca', text: 'Crypto assets have no long-term benefit in India — the 30% flat rate applies regardless of holding period under Section 115BBH. However, we can time the redemption strategically.', ts: Date.now() - 7000000, type: 'text' },
+  ],
+};
+
+function CASecureChat({ session, onSubscribeModal }) {
+  const [messages, setMessages]     = useState(MOCK_CHAT_HISTORY[session?.id] || []);
+  const [input,    setInput]        = useState('');
+  const [isTyping, setIsTyping]     = useState(false);
+  const [recording, setRecording]   = useState(false);
+  const [recordSec, setRecordSec]   = useState(0);
+  const [encKey,   setEncKey]       = useState('AES-256-' + Math.random().toString(36).slice(2,10).toUpperCase());
+  const chatEndRef = React.useRef(null);
+  const fileInputRef = React.useRef(null);
+  const recTimerRef  = React.useRef(null);
+
+  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+
+  const sendMsg = useCallback(() => {
+    if (!input.trim()) return;
+    const msg = { id: Date.now(), from: 'user', text: input.trim(), ts: Date.now(), type: 'text' };
+    setMessages(prev => [...prev, msg]);
+    setInput('');
+    // Simulate CA typing
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      setMessages(prev => [
+        ...prev,
+        { id: Date.now() + 1, from: 'ca', text: 'Got it — let me look into that for you. One moment...', ts: Date.now(), type: 'text' }
+      ]);
+    }, 2200);
+  }, [input]);
+
+  const handleFile = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const isImage = file.type.startsWith('image/');
+    const isAudio = file.type.startsWith('audio/');
+    const isVideo = file.type.startsWith('video/');
+    const sizeStr = file.size > 1048576 ? `${(file.size/1048576).toFixed(1)} MB` : `${(file.size/1024).toFixed(0)} KB`;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setMessages(prev => [...prev, {
+        id: Date.now(), from: 'user', type: isImage ? 'image' : isAudio ? 'audio' : isVideo ? 'video' : 'file',
+        fileName: file.name, fileSize: sizeStr, dataUrl: isImage ? ev.target.result : null,
+        ts: Date.now(),
+      }]);
+    };
+    if (isImage) reader.readAsDataURL(file);
+    else reader.readAsArrayBuffer(file);
+    e.target.value = '';
+  }, []);
+
+  const startRecording = useCallback(() => {
+    setRecording(true); setRecordSec(0);
+    recTimerRef.current = setInterval(() => setRecordSec(s => s + 1), 1000);
+  }, []);
+
+  const stopRecording = useCallback(() => {
+    clearInterval(recTimerRef.current);
+    const secs = recordSec;
+    setRecording(false); setRecordSec(0);
+    const duration = `${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;
+    setMessages(prev => [...prev, {
+      id: Date.now(), from: 'user', type: 'voice', duration, ts: Date.now()
+    }]);
+  }, [recordSec]);
+
+  const fmtTime = (ts) => new Date(ts).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+  if (!session) return (
+    <div className="chat-no-session">
+      <MessageSquare size={40} style={{ color: 'var(--text-3)', marginBottom: 12 }} />
+      <p>Select a session from <strong>My Sessions</strong> tab and click <strong>Chat</strong> to open the secure channel.</p>
+    </div>
+  );
+
+  return (
+    <div className="chat-root">
+      {/* Chat header */}
+      <div className="chat-header glass-card">
+        <div className="chat-header-ca">
+          <div className="ses-avatar" style={{ background: session.caColor + '22', color: session.caColor, width: 40, height: 40, borderRadius: 12, fontSize: 14, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{session.caAvatar}</div>
+          <div>
+            <p className="chat-ca-name">{session.caName}</p>
+            <p className="chat-ca-sub">{session.caFirm} · {session.caSpec}</p>
+          </div>
+          <div className="chat-enc-badge"><Key size={10} /> E2E Encrypted</div>
+        </div>
+        <div className="chat-header-actions">
+          <button className="chat-call-btn" title="Voice Call" onClick={() => onSubscribeModal('call')}>
+            <PhoneCall size={15} />
+          </button>
+          <button className="chat-call-btn" title="Video Call" onClick={() => onSubscribeModal('video')}>
+            <Video size={15} />
+          </button>
+          <div className="chat-key-info" title={`Session Key: ${encKey}`}>
+            <ShieldCheck size={12} style={{ color: '#10B981' }} />
+            <span className="chat-key-text">{encKey}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Messages area */}
+      <div className="chat-messages">
+        {/* Encryption notice */}
+        <div className="chat-enc-notice">
+          <Lock size={11} />
+          Messages are end-to-end encrypted. Only you and {session.caName} can read them.
+        </div>
+
+        {messages.map(msg => (
+          <motion.div
+            key={msg.id}
+            className={`chat-bubble-wrap ${msg.from}`}
+            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {msg.from === 'ca' && (
+              <div className="chat-bubble-avatar" style={{ background: session.caColor + '22', color: session.caColor }}>{session.caAvatar}</div>
+            )}
+            <div className={`chat-bubble ${msg.from}`}>
+              {msg.type === 'text' && (
+                <p dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
+              )}
+              {msg.type === 'image' && (
+                <div className="chat-img-msg">
+                  {msg.dataUrl ? <img src={msg.dataUrl} alt={msg.fileName} className="chat-img" /> : <div className="chat-img-placeholder"><ImageIcon size={20} /></div>}
+                  <p className="chat-file-name">{msg.fileName}</p>
+                </div>
+              )}
+              {msg.type === 'file' && (
+                <div className="chat-file-msg">
+                  <FileText size={20} style={{ color: 'var(--accent-2)' }} />
+                  <div>
+                    <p className="chat-file-name">{msg.fileName}</p>
+                    <p className="chat-file-size">{msg.fileSize}</p>
+                  </div>
+                  <button className="chat-dl-btn"><Download size={12} /></button>
+                </div>
+              )}
+              {(msg.type === 'audio' || msg.type === 'video') && (
+                <div className="chat-file-msg">
+                  {msg.type === 'audio' ? <Music size={20} style={{ color: '#8B5CF6' }} /> : <Film size={20} style={{ color: '#3B82F6' }} />}
+                  <div>
+                    <p className="chat-file-name">{msg.fileName}</p>
+                    <p className="chat-file-size">{msg.fileSize}</p>
+                  </div>
+                  <button className="chat-dl-btn"><Download size={12} /></button>
+                </div>
+              )}
+              {msg.type === 'voice' && (
+                <div className="chat-voice-msg">
+                  <Volume2 size={15} style={{ color: 'var(--accent-2)' }} />
+                  <div className="chat-voice-wave">
+                    {[3,5,8,4,7,6,5,8,3,6,7,5,4,8,3].map((h,i) => <div key={i} className="chat-wave-bar" style={{ height: h * 2 + 'px' }} />)}
+                  </div>
+                  <span className="chat-voice-dur">{msg.duration}</span>
+                </div>
+              )}
+              <span className="chat-ts">{fmtTime(msg.ts)}</span>
+            </div>
+          </motion.div>
+        ))}
+
+        {/* Typing indicator */}
+        <AnimatePresence>
+          {isTyping && (
+            <motion.div className="chat-typing" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <div className="chat-bubble-avatar" style={{ background: session.caColor + '22', color: session.caColor }}>{session.caAvatar}</div>
+              <div className="typing-dots"><span/><span/><span/></div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <div ref={chatEndRef} />
+      </div>
+
+      {/* Input area */}
+      <div className="chat-input-area">
+        {/* Recording overlay */}
+        <AnimatePresence>
+          {recording && (
+            <motion.div className="chat-recording" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="rec-pulse" />
+              <span className="rec-label">Recording... {Math.floor(recordSec/60)}:{String(recordSec%60).padStart(2,'0')}</span>
+              <button className="rec-stop-btn" onClick={stopRecording}><Check size={14} /> Send</button>
+              <button className="rec-cancel-btn" onClick={() => { clearInterval(recTimerRef.current); setRecording(false); setRecordSec(0); }}><X size={13} /></button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="chat-input-row">
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFile}
+            accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.xlsx,.zip"
+          />
+          <button className="chat-attach-btn" title="Attach file" onClick={() => fileInputRef.current?.click()}>
+            <Paperclip size={16} />
+          </button>
+          <button className="chat-attach-btn" onClick={() => { fileInputRef.current.accept = 'image/*'; fileInputRef.current?.click(); }} title="Send photo">
+            <ImageIcon size={16} />
+          </button>
+          <input
+            className="chat-text-input"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMsg()}
+            placeholder="Type a secure message..."
+          />
+          <button
+            className={`chat-mic-btn ${recording ? 'recording' : ''}`}
+            onMouseDown={startRecording}
+            onMouseUp={stopRecording}
+            onTouchStart={startRecording}
+            onTouchEnd={stopRecording}
+            title="Hold to record voice message"
+          >
+            {recording ? <MicOff size={15} /> : <Mic size={15} />}
+          </button>
+          <motion.button
+            className="chat-send-btn"
+            onClick={sendMsg}
+            disabled={!input.trim()}
+            whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}
+          >
+            <Send size={15} />
+          </motion.button>
+        </div>
+        <p className="chat-enc-footer"><Lock size={9} /> End-to-end encrypted · {encKey}</p>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SUBSCRIPTION MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+function SubscribeModal({ type, onClose }) {
+  const plans = [
+    { id: 'pro', name: 'Nexus Pro', price: 499, period: '/mo', color: '#6C3BEE', features: ['HD Voice Calls with CA', 'HD Video Consultations', 'Unlimited session extensions', 'Priority CA matching', 'Session recordings (7-day)', 'Advanced Tax Reports'] },
+    { id: 'elite', name: 'Nexus Elite', price: 999, period: '/mo', color: '#F59E0B', features: ['Everything in Pro', '4K Video Consultations', 'Dedicated CA Manager', 'DTAA & NRI support priority', 'Lifetime session recordings', 'White-glove onboarding'] },
+  ];
+
+  return (
+    <motion.div className="ai-modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <motion.div className="ai-modal glass-card" style={{ maxWidth: 620 }} initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}>
+        <div className="ai-modal-header">
+          <span><Crown size={16} style={{ color: '#F59E0B', marginRight: 6 }} />{type === 'video' ? '📹 Upgrade for Video Calls' : '📞 Upgrade for Voice Calls'}</span>
+          <button className="ai-modal-close" onClick={onClose}>×</button>
+        </div>
+        <div className="sub-modal-body">
+          <p className="sub-modal-intro">
+            {type === 'video' ? 'HD video consultations with your CA' : 'Crystal-clear HD audio calls with your CA'} are available on <strong>Nexus Pro</strong> and <strong>Nexus Elite</strong>.
+          </p>
+          <div className="sub-plans-row">
+            {plans.map(plan => (
+              <motion.div key={plan.id} className={`sub-plan ${plan.id}`} whileHover={{ y: -4 }} style={{ borderColor: plan.color + '44' }}>
+                <div className="sub-plan-top" style={{ background: plan.color + '14' }}>
+                  {plan.id === 'elite' && <div className="sub-best-tag">Most Popular</div>}
+                  <p className="sub-plan-name" style={{ color: plan.color }}>{plan.name}</p>
+                  <div className="sub-price-row">
+                    <span className="sub-price">₹{plan.price}</span>
+                    <span className="sub-period">{plan.period}</span>
+                  </div>
+                </div>
+                <ul className="sub-features">
+                  {plan.features.map(f => (
+                    <li key={f}><Check size={12} style={{ color: plan.color }} />{f}</li>
+                  ))}
+                </ul>
+                <motion.button
+                  className="sub-cta-btn"
+                  style={{ background: `linear-gradient(135deg, ${plan.color}, ${plan.color}cc)` }}
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  onClick={onClose}
+                >
+                  Get {plan.name} →
+                </motion.button>
+              </motion.div>
+            ))}
+          </div>
+          <p className="sub-footer">✅ 7-day free trial · Cancel anytime · Instant activation · No credit card lock-in</p>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // MAIN CA PAGE
 // ═══════════════════════════════════════════════════════════════════════════════
 const TABS = [
@@ -874,6 +1592,8 @@ const TABS = [
   { id: 'preflight',  label: 'Pre-Flight Briefcase', icon: <Briefcase size={15} /> },
   { id: 'taxtwin',    label: 'Tax-Twin Sandbox',   icon: <FlaskConical size={15} /> },
   { id: 'vault',      label: 'Data Vault',         icon: <Lock size={15} /> },
+  { id: 'sessions',   label: 'My Sessions',        icon: <Calendar size={15} /> },
+  { id: 'chat',       label: 'Secure Chat',        icon: <MessageSquare size={15} /> },
 ];
 
 const SPECIALTY_FILTERS = [
@@ -895,6 +1615,9 @@ export default function CAPage() {
   const [bookResult,    setBookResult]    = useState(null);
   const [vaultCA,       setVaultCA]       = useState(null);
   const [upsellCA,      setUpsellCA]      = useState(null);
+  const [sessions,      setSessions]      = useState(MOCK_SESSIONS);
+  const [chatSession,   setChatSession]   = useState(null);
+  const [subscribeModal,setSubscribeModal]= useState(null); // 'video' | 'call'
 
   useEffect(() => {
     setLoading(true);
@@ -925,11 +1648,25 @@ export default function CAPage() {
       });
       const d = await r.json();
       setBookResult(d);
+      if (d.success) {
+        // Add to sessions panel
+        const hoursAhead = consultationType === 'quick' ? 1 : 2;
+        const newSes = {
+          id: `ses_new_${Date.now()}`, caId: ca.id, caName: ca.name, caAvatar: ca.avatar,
+          caColor: ca.color, caFirm: ca.firm, caSpec: ca.specializations[0],
+          type: consultationType, slot, fee: consultationType === 'quick' ? ca.quickConsultFee : ca.consultationFee,
+          date: new Date(Date.now() + hoursAhead * 3600000).toISOString(),
+          status: 'upcoming', dossierAttached, bookingId: d.bookingId,
+          notes: '', reminder: true, zoomLink: `https://meet.nexus.ai/room/ses_new_${Date.now()}`,
+        };
+        setSessions(prev => [newSes, ...prev]);
+      }
     } catch {}
   }
 
   function handleVault(ca) { setVaultCA(ca); setTab('vault'); }
   function handleUpsellCA(ca) { setUpsellCA(ca); }
+  function handleOpenChat(ses) { setChatSession(ses); setTab('chat'); }
 
   return (
     <div className="ca-root">
@@ -1018,6 +1755,20 @@ export default function CAPage() {
               <EphemeralVault preSelectedCA={vaultCA} />
             </motion.div>
           )}
+
+          {/* ── MY SESSIONS ── */}
+          {tab === 'sessions' && (
+            <motion.div key="ses" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.22 }}>
+              <MySessionsPanel sessions={sessions} setSessions={setSessions} onOpenChat={handleOpenChat} onSubscribeModal={(t) => setSubscribeModal(t)} />
+            </motion.div>
+          )}
+
+          {/* ── SECURE CHAT ── */}
+          {tab === 'chat' && (
+            <motion.div key="chat" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.22 }}>
+              <CASecureChat session={chatSession} onSubscribeModal={(t) => setSubscribeModal(t)} />
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
@@ -1067,6 +1818,13 @@ export default function CAPage() {
               )}
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Subscription Modal */}
+      <AnimatePresence>
+        {subscribeModal && (
+          <SubscribeModal type={subscribeModal} onClose={() => setSubscribeModal(null)} />
         )}
       </AnimatePresence>
     </div>
